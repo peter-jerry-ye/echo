@@ -20,7 +20,7 @@ public class Wall extends Line {
      * If they collide, return the bounced particle.
      * Otherwise return null;
      * @param p the particle to be examined
-     * @return null if they do not collide, the bounced particle otherwise
+     * @return origin particle if they do not collide, the bounced particle otherwise
      */
     public Particle collide(Particle p) {
         // Detect if they are close enough
@@ -36,7 +36,7 @@ public class Wall extends Line {
         line = line.normalize();
         double projection = vector.dotProduct(line);
         
-        boolean collide = Math.abs(distance) <= Particle.RADIUS;
+        boolean collide = Math.abs(distance) <= Particle.RADIUS
                 && projection >= 0
                 && projection <= start.distance(end);
         // If they collide
@@ -50,6 +50,6 @@ public class Wall extends Line {
         }
         // Otherwise
         else
-            return null;
+            return p;
     }
 }

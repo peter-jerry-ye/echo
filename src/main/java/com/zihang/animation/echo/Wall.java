@@ -48,7 +48,7 @@ public class Wall extends Line {
             Point2D newSpeed = speed.subtract(vertical.multiply(2 * verticalSpeed));
             double newDirection = 0;
             newDirection = Math.atan2(newSpeed.getY(), newSpeed.getX());
-            return new Particle(p.getX(), p.getY(), newDirection);
+            return new Particle(p.getX(), p.getY(), newDirection, p.getLifespan());
         }
         // Otherwise
         else

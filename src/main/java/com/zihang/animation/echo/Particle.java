@@ -3,6 +3,8 @@ package com.zihang.animation.echo;
 import javafx.geometry.Point2D;
 
 public class Particle extends Point2D {
+    public static final int RADIUS = 1;
+
     private final double direction;
     private final long lifespan;
 

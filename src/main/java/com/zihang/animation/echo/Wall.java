@@ -24,8 +24,6 @@ public class Wall extends Line {
      */
     public Particle collide(Particle p) {
         // Detect if they are close enough
-        // The radius of the particle is considered one
-        final double SIZE = 1;
         // Find a vector vertical to this wall
         Point2D vertical = new Point2D(getStartY() - getEndY(), getEndX() - getStartX());
         vertical = vertical.normalize();
@@ -38,7 +36,7 @@ public class Wall extends Line {
         line = line.normalize();
         double projection = vector.dotProduct(line);
         
-        boolean collide = Math.abs(distance) <= SIZE
+        boolean collide = Math.abs(distance) <= Particle.RADIUS;
                 && projection >= 0
                 && projection <= start.distance(end);
         // If they collide

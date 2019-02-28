@@ -25,27 +25,23 @@ public class Wall extends Line {
     public Particle collide(Particle p) {
         // Detect if they are close enough
         // Find a vector vertical to this wall
-        Point2D vertical = new Point2D(getStartY() - getEndY(), getEndX() - getStartX());
-        vertical = vertical.normalize();
+        Point2D vertical = new Point2D(getStartY() - getEndY(), getEndX() - getStartX()).normalize();
         // Find out the distance between the p and the line where this wall situates.
         Point2D vector = p.subtract(start);
         double distance = vector.dotProduct(vertical);
         
         // The p also needs to hit this wall, i.e. between start and end
-        Point2D line = end.subtract(start);
-        line = line.normalize();
+        Point2D line = end.subtract(start).normalize();
         double projection = vector.dotProduct(line);
         
         boolean collide = Math.abs(distance) <= Particle.RADIUS
-                && projection >= 0
-                && projection <= start.distance(end);
+                && projection >= -Particle.RADIUS
+                && projection <= start.distance(end) + Particle.RADIUS;
         // If they collide
         if (collide) {
-            Point2D speed = new Point2D(Math.cos(p.getDirection()), Math.sin(p.getDirection()));
-            double verticalSpeed = speed.dotProduct(vertical);
-            Point2D newSpeed = speed.subtract(vertical.multiply(2 * verticalSpeed));
-            double newDirection = 0;
-            newDirection = Math.atan2(newSpeed.getY(), newSpeed.getX());
+            // pv = p - (p .* line) * line
+            Point2D verticalSpeed = p.getDirection().subtract(line.multiply(p.getDirection().dotProduct(line)));
+            Point2D newDirection = p.getDirection().subtract(verticalSpeed.multiply(2));
             return new Particle(p.getX(), p.getY(), newDirection, p.getLifespan());
         }
         // Otherwise

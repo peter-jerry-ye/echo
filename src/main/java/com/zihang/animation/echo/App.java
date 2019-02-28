@@ -43,7 +43,8 @@ public class App extends Application {
             public void handle(MouseEvent event) {
                 synchronized (particles) {
                     for (int i = 0; i < NPARTICLES; i++) {
-                        particles.add(new Particle(event.getX(), event.getY(), 2 * Math.PI * i / NPARTICLES, LIFESPAN));
+                        double angle = 2 * Math.PI * i / NPARTICLES;
+                        particles.add(new Particle(event.getX(), event.getY(), Math.cos(angle), Math.sin(angle), LIFESPAN));
                     }
                 }
             }

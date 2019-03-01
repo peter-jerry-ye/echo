@@ -33,10 +33,14 @@ public class BasicMap implements Map {
     }
 
     @Override
-    public double distanceToCollide(Particle p) {
+    public double distanceToCollide(Particle p, boolean reflected) {
         double distance = Double.MAX_VALUE;
-        for (Wall w : walls)
-            distance = Math.min(distance, w.distanceToCollide(p));
+        for (Wall w : walls) {
+            double d = w.distanceToCollide(p);
+            if (reflected && d == 0)
+                continue;
+            distance = Math.min(d, distance);
+        }
         return distance;
     }
 

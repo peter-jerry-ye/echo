@@ -36,18 +36,26 @@ public class Particle extends Point2D {
     }
 
     /**
+     * Reduce the lifespan of the particle
+     * @return a new particle with shorter lifespan or null if the particle dies
+     */
+    public Particle decreaseLifespan() {
+        if (lifespan == 1)
+            return null;
+        else
+            return new Particle(this.getX(), this.getY(), this.direction, this.lifespan - 1);
+    }
+
+    /**
      * Move the particle along it's direction. The particle will disappear if it
      * reaches it's lifespan.
      * 
      * @param distance the distance to move
-     * @return a new particle at the new position or null if the particle dies.
+     * @return a new particle at the new position
      */
     public Particle move(double distance) {
-        if (lifespan > 1)
             return new Particle(getX() + distance * direction.getX(), getY() + distance * direction.getY(), direction,
-                    lifespan - 1);
-        else
-            return null;
+                    lifespan);
     }
 
     @Override

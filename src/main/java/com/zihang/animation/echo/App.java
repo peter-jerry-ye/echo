@@ -1,11 +1,12 @@
 package com.zihang.animation.echo;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -28,9 +29,26 @@ public class App extends Application {
     private final int LIFESPAN = 500;
     private final int SPEED = 1;
 
-    private LinkedList<Particle> particles = new LinkedList<>();
+    private final List<Particle> particles = new ArrayList<>();
     private ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-    private Map map = new BasicMap();
+    private final Map map = new BasicMap();
+
+    private final BiFunction<Map, Particle, Particle> BI_FUNCTION = (Map m, Particle p) -> {
+        double toGo = SPEED;
+        double distance = m.distanceToCollide(p, false);
+        p = p.decreaseLifespan();
+        if (p == null)
+            return null;
+        while (true) {
+            if (distance > toGo) {
+                return p.move(toGo);
+            }
+            p = p.move(distance);
+            p = m.collisionDetection(p);
+            toGo -= distance;
+            distance = m.distanceToCollide(p, true);
+        }
+    };
 
     @Override
     public void start(Stage primaryStage) {
@@ -44,7 +62,8 @@ public class App extends Application {
                 synchronized (particles) {
                     for (int i = 0; i < NPARTICLES; i++) {
                         double angle = 2 * Math.PI * i / NPARTICLES;
-                        particles.add(new Particle(event.getX(), event.getY(), Math.cos(angle), Math.sin(angle), LIFESPAN));
+                        particles.add(
+                                new Particle(event.getX(), event.getY(), Math.cos(angle), Math.sin(angle), LIFESPAN));
                     }
                 }
             }
@@ -54,18 +73,13 @@ public class App extends Application {
         service.scheduleWithFixedDelay(() -> {
             List<Particle> ps = new ArrayList<>();
             synchronized (particles) {
-                int size = particles.size();
-                // Collision detection for each particle.
-                for (int i = 0; i < size; i++) {
-                    Particle p = particles.remove(0);
-                    p = map.collisionDetection(p);
-                    p = p.move(SPEED);
-                    if (p != null)
-                        particles.add(p);
-                }
+                List<Particle> tmp = particles.parallelStream().map((p) -> BI_FUNCTION.apply(map, p))
+                        .filter(p -> p != null).sequential().collect(Collectors.toList());
+                particles.clear();
+                particles.addAll(tmp);
 
-                // Repaint.
-                ps.addAll(particles);
+                // Repaint
+                ps.addAll(tmp);
             }
             Platform.runLater(() -> {
                 GraphicsContext gc = canvas.getGraphicsContext2D();

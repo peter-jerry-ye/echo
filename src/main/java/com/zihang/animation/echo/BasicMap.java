@@ -32,4 +32,12 @@ public class BasicMap implements Map {
         return newParticle;
     }
 
+    @Override
+    public double distanceToCollide(Particle p) {
+        double distance = Double.MAX_VALUE;
+        for (Wall w : walls)
+            distance = Math.min(distance, w.distanceToCollide(p));
+        return distance;
+    }
+
 }

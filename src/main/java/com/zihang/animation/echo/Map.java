@@ -16,4 +16,11 @@ public interface Map {
      * @return the origin particle if there's no collision, the new particle if there is collision.
      */
     Particle collisionDetection(Particle p);
+    /**
+     * Calculate the time before collision.
+     * 0 if already collided, Double.MAX_VALUE if no collision.
+     * @param p the Particle to be examined
+     * @return the distance before next collision, 0 if already collided, Double.MAX_VALUE if no collision.
+     */
+    double distanceToCollide(Particle p);
 }

@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 
 public class Particle extends Point2D {
     public static final int RADIUS = 1;
+    public static final double DELTA = 1e-10; // precision
 
     private final Point2D direction;
     private final long lifespan;
@@ -54,11 +55,9 @@ public class Particle extends Point2D {
         if (!(obj instanceof Particle))
             return false;
         Particle other = (Particle) obj;
-        // To avoid inaccuracy due to double
-        final double error = 1e-8;
-        return Math.abs(this.getX() - other.getX()) < error && Math.abs(this.getY() - other.getY()) < error
-                && Math.abs(this.direction.getX() - ((Particle) obj).direction.getX()) <= error
-                && Math.abs(this.direction.getY() - ((Particle) obj).direction.getY()) <= error;
+        return Math.abs(this.getX() - other.getX()) < DELTA && Math.abs(this.getY() - other.getY()) < DELTA
+                && Math.abs(this.direction.getX() - ((Particle) obj).direction.getX()) <= DELTA
+                && Math.abs(this.direction.getY() - ((Particle) obj).direction.getY()) <= DELTA;
     }
 
     @Override

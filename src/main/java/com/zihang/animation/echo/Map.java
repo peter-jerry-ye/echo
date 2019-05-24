@@ -26,4 +26,9 @@ public interface Map {
      * @return the distance before next collision, 0 if already collided, Double.MAX_VALUE if no collision.
      */
     double distanceToCollide(Particle p, boolean reflected);
+    /**
+     * Insert wall to the map.
+     * @param wall the wall to be inserted
+     */
+    void insert(Wall wall);
 }

@@ -31,7 +31,19 @@ public class App extends Application {
 
     private final List<Particle> particles = new ArrayList<>();
     private ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-    private final Map map = new BasicMap();
+    private final Map map = new QuadTreeMap(0, 0, 500, 500);
+    // private final Map map = new BasicMap();
+
+    {
+        int N = 100;
+        for (int i = 0; i < N; i++) {
+            map.insert(new Wall(100 + i * 300 / N, 100, 100 + i * 300 / N + 300 / N, 100));
+            map.insert(new Wall(100 + i * 300 / N, 400, 100 + i * 300 / N + 300 / N, 400));
+            map.insert(new Wall(100, 100 + i * 300 / N, 100, 100 + i * 300 / N + 300 / N));
+            map.insert(new Wall(400, 100 + i * 300 / N, 400, 100 + i * 300 / N + 300 / N));
+        }
+        map.insert(new Wall(200, 300, 300, 200));
+    }
 
     private final BiFunction<Map, Particle, Particle> BI_FUNCTION = (Map m, Particle p) -> {
         double toGo = SPEED;
